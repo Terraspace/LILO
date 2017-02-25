@@ -1,0 +1,13 @@
+{
+  "name": "project_starfire",
+  "version": "1.0.0",
+  "main": "main.js",
+  "productName": "Project Starfire",
+  "scripts": {
+    "start": "electron main.js"
+  },
+  "devDependencies": {
+    "electron-packager": "^8.5.1",
+    "electron-prebuilt": "^1.4.13"
+  }
+}
