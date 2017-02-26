@@ -720,6 +720,7 @@ var Lilo = Lilo || {}; // Use existing namespace, or create a new one if it does
         fps: 0,
         width: 0,
         height: 0,
+        aspect: 1,
         mouseX: 0,
         mouseY: 0,
         oldMouseX: 0,
@@ -1832,6 +1833,8 @@ var Lilo = Lilo || {}; // Use existing namespace, or create a new one if it does
                         canvas2.height = (window.innerHeight * window.devicePixelRatio)|0;
                         Lilo.Engine.glCanvas = canvas2;                        
                         Lilo.Engine._glCtx = canvas2.getContext( "experimental-webgl", { preserveDrawingBuffer: true, alpha: false } );
+                        if( Lilo.Engine._glCtx == null )
+                            canvas2.getContext( "webgl", { preserveDrawingBuffer: true, alpha: false } );
                     }
 
                     ctx = canvas.getContext("2d",{ antialias: true, alpha: false });
@@ -1876,6 +1879,8 @@ var Lilo = Lilo || {}; // Use existing namespace, or create a new one if it does
                         canvas2.height = (window.innerHeight * window.devicePixelRatio)|0;
                         Lilo.Engine.glCanvas = canvas2;                        
                         Lilo.Engine._glCtx = canvas2.getContext( "experimental-webgl", { preserveDrawingBuffer: true, alpha: false } );
+                        if( Lilo.Engine._glCtx == null )
+                            canvas2.getContext( "webgl", { preserveDrawingBuffer: true, alpha: false } );
                     }
 
                     ctx = canvas.getContext("2d", { antialias: true, alpha: false });
@@ -2018,6 +2023,8 @@ var Lilo = Lilo || {}; // Use existing namespace, or create a new one if it does
         },
 
         Update: function () {
+
+            this.aspect = this.height / this.width;
             var ctx = Lilo.Engine.ctx;
 
             if (Lilo.Engine.wheelPos != Lilo.Engine.oldWheelPos) {
@@ -2201,9 +2208,11 @@ var Lilo = Lilo || {}; // Use existing namespace, or create a new one if it does
         }
 
         this.GetHitList = function( ctrl, results ) {
+            ctrl.hasHover = false;
             var c = ctrl.GetControls();
             for(var i=0;i<c.length;i++)
             {
+                c[i].hasHover = false;
                 if (!c[i].isVisible || !c[i].isActive) continue;
                 if(c[i].CheckBounds && c[i].CheckBounds())
                 {
@@ -3970,6 +3979,9 @@ var Lilo = Lilo || {}; // Use existing namespace, or create a new one if it does
             if (this.styleLogic != null) {
                 this.styleLogic();
             }
+
+            if( this.animate )
+                this.animate();
         }
 
         this.FadeIn = function (duration) {
@@ -8356,7 +8368,7 @@ var Lilo = Lilo || {}; // Use existing namespace, or create a new one if it does
         this.fshadersrc += "varying vec2 v_texCoord; \n";
         this.fshadersrc += "void main() { \n";
         this.fshadersrc += "   // Look up a color from the texture. \n";
-        this.fshadersrc += "   gl_FragColor = texture2D(u_image,v_texCoord); \n";
+        this.fshadersrc += "   gl_FragColor = texture2D(u_image,v_texCoord) * vec4(v_texCoord.x ,v_texCoord.y*1.2,v_texCoord.y,1.0); \n";
         this.fshadersrc += "}";
 
         this.vshader = Lilo.Engine.CreateShader( Lilo.Engine._glCtx.VERTEX_SHADER, this.vshadersrc );
@@ -8461,7 +8473,7 @@ var Lilo = Lilo || {}; // Use existing namespace, or create a new one if it does
 
             var translationMatrix = UE.Geometry.m3.translation( this.fxposition[0], this.fxposition[1] );
             var rotationMatrix = UE.Geometry.m3.rotation( UE.Geometry.Deg2Rad( this.fxrotation ) );
-            var scaleMatrix = UE.Geometry.m3.scaling( this.scale, this.scale );
+            var scaleMatrix = UE.Geometry.m3.scaling( this.scale, this.scale/Lilo.Engine.aspect );
             var matrix = UE.Geometry.m3.multiply( scaleMatrix, translationMatrix );
             matrix = UE.Geometry.m3.multiply( matrix, rotationMatrix );
 
