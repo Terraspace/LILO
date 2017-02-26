@@ -32,10 +32,7 @@ A novel approach to styling has been taken with Lilo in which all controls are r
 
 Simply include **lilo.js** and the stub (&quot;empty&quot;) **cordova.js** (this file allows direct compatibility with Cocoon.IO).
 
-| &lt;!DOCTYPE html&gt;&lt;html lang=&quot;en&quot; xmlns=&quot;http://www.w3.org/1999/xhtml&quot;&gt;&lt;head&gt;    &lt;title&gt; ../ Terraspace /.. &lt;/title&gt;    &lt;meta charset=&quot;utf-8&quot;/&gt;    &lt;meta http-equiv=&quot;Content-Security-Policy&quot;/&gt;    &lt;meta name=&quot;viewport&quot; id=&quot;liloviewport&quot; content=&quot;user-scalable=no, width=device-width, initial-scale=1.0, maximum-scale=1.0&quot;/&gt;    &lt;meta name=&quot;apple-mobile-web-app-capable&quot; content=&quot;yes&quot;/&gt;    &lt;meta http-equiv=&quot;Content-type&quot; content=&quot;text/html;charset=UTF-8&quot;/&gt;    &lt;style type=&quot;text/css&quot;&gt;        body {            margin:0px;            padding:0px;            overflow: hidden;        }    &lt;/style&gt;     &lt;script type=&quot;text/javascript&quot; src=&quot;cordova.js&quot;&gt;&lt;/script&gt;    &lt;script type=&quot;text/javascript&quot; src=&quot;scripts/lilo.js&quot;&gt;&lt;/script&gt;    &lt;script type=&quot;text/javascript&quot; src=&quot;scripts/mainview.js&quot;&gt;&lt;/script&gt;     &lt;script type=&quot;text/javascript&quot;&gt;     **var** MainView; _/\* Main application view \*/_ _    /\* Initialize and start our app \*/_    **function** InitApp() {               _/\* Initialize the Lilo UI Framework \*/_        Lilo.Engine.Initialize( Lilo.WEBGL, **null** , **null** );        Lilo.Engine.DEBUG = **false** ; _/\* Don&#39;t show debug output \*/_        Lilo.Engine.SetDepthTesting( **false** ); _/\* Only using 2D WebGL features, so disable \*/_         MainView = CreateMainView();        Lilo.Engine.SetView( MainView );            } _    /\* Generic app exit method \*/_    **function** ExitApp() {        Lilo.Engine.Exit();    }     &lt;/script&gt;&lt;/head&gt;&lt;body onload=&quot;LiloInit();&quot;&gt;&lt;/body&gt;&lt;/html&gt;
- |
-| --- |
-
+![alt tag](http://www.terraspace.co.uk/gfx/doc3.png)
 
 
 
