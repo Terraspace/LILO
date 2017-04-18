@@ -1,0 +1,57 @@
+﻿
+<!DOCTYPE html>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+<head>
+
+    <meta http-equiv="Content-Security-Policy" />
+    <meta name="viewport" id="bviewport" content="user-scalable=no, width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta charset="utf-8">
+    <meta http-equiv="Content-type" content="text/html;charset=UTF-8">
+    <title>..| Lilo Sample |..</title>
+    <link rel="apple-touch-icon" href="gfx/appicon.png" />
+    <LINK REL="SHORTCUT ICON" HREF="favicon.ico">
+    <link rel="apple-touch-icon-precomposed" href="gfx/appicon.png" />
+	<style type="text/css">
+        body {
+            margin: 0px;
+            padding: 0px;
+            overflow: hidden;
+        }
+    </style>
+	
+    <script src="cordova.js"></script>
+	<script src="lilo.js"></script>
+	<script src="app.js"></script>
+	
+    <script>
+
+		var MainView;
+		var globalValue = 0.0;
+		var user = "";
+		
+		// To package up an Electron distribution use:
+		// https://github.com/electron-userland/electron-packager
+		function InitApp()
+		{
+			/* Initialize the Lilo UI Framework */
+            Lilo.Engine.Initialize(Lilo.CANVAS, null, null);	
+
+			/* Switch to our main display */
+			MainView = BuildMainView();
+			Lilo.Engine.SetView( MainView );
+		}
+
+		function ExitApp() 
+		{
+			Lilo.Engine.Exit();
+		}		
+		
+    </script>
+
+</head>
+
+<body onload="LiloInit();">
+</body>
+</html>
