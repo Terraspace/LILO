@@ -27,62 +27,53 @@ var Lilo = Lilo || {}; // Use existing namespace, or create a new one if it does
     // Namespace constants.
     Lilo.POSITION_ABSOLUTE = 0;
     Lilo.POSITION_RELATIVE = 1;
-    
     Lilo.CANVAS = 0;
-    Lilo.WEBGL  = 1;
-    
+    Lilo.WEBGL = 1;
     Lilo.DESKTOP = 0;
-    Lilo.MOBILE  = 1;
-    
-    Lilo.WHEELUP   = -1;
+    Lilo.MOBILE = 1;
+    Lilo.WHEELUP = -1;
     Lilo.WHEELDOWN = 1;
-    
-    Lilo.KEY_BACKSPACE         = 8;
-    Lilo.KEY_ENTER             = 13;
-    Lilo.KEY_SPACE             = 32;
-    Lilo.KEY_LEFTARROW         = 37;
-    Lilo.KEY_RIGHTARROW        = 39;
-    Lilo.KEY_UPARROW           = 38;
-    Lilo.KEY_DOWNARROW         = 40;
-    Lilo.KEY_HOME              = 36;
-    Lilo.KEY_END               = 35;
-    Lilo.KEY_DELETE            = 46;
-    Lilo.KEY_TAB               = 9;
-    Lilo.KEY_ESC               = 27;
-    Lilo.KEY_E                 = 69;
-    Lilo.KEY_F                 = 70;
-    Lilo.KEY_K                 = 75;
-    Lilo.KEY_C                 = 67;
-    Lilo.KEY_D                 = 68;
-    Lilo.KEY_R                 = 82;
-    Lilo.KEY_V                 = 86;
-    Lilo.KEY_H                 = 72;
-    Lilo.KEY_P                 = 80;
-    Lilo.KEY_T                 = 84;
-    Lilo.KEY_N                 = 78;
-    Lilo.KEY_S                 = 83;
-    Lilo.KEY_O                 = 79;
-    Lilo.KEY_X                 = 88;
-    Lilo.KEY_Q                 = 81;
-    Lilo.KEY_Y                 = 89;
-    Lilo.KEY_Z                 = 90;
-    Lilo.KEY_W                 = 87;
-    Lilo.KEY_A                 = 65;
-    Lilo.KEY_CTRL              = 17;
-    Lilo.KEY_ALT               = 18;
-    Lilo.KEY_SHIFT             = 16;
-    Lilo.KEY_PLUS              = 187;
-    Lilo.KEY_MINUS             = 189;
-    Lilo.KEY_H                 = 72;
-    Lilo.KEY_LEFTANGLEBRACKET  = 188;
+    Lilo.KEY_BACKSPACE = 8;
+    Lilo.KEY_ENTER = 13;
+    Lilo.KEY_SPACE = 32;
+    Lilo.KEY_LEFTARROW = 37;
+    Lilo.KEY_RIGHTARROW = 39;
+    Lilo.KEY_UPARROW = 38;
+    Lilo.KEY_DOWNARROW = 40;
+    Lilo.KEY_HOME = 36;
+    Lilo.KEY_END = 35;
+    Lilo.KEY_DELETE = 46;
+    Lilo.KEY_TAB = 9;
+    Lilo.KEY_ESC = 27;
+    Lilo.KEY_E = 69;
+    Lilo.KEY_F = 70;
+    Lilo.KEY_K = 75;
+    Lilo.KEY_C = 67;
+    Lilo.KEY_D = 68;
+    Lilo.KEY_R = 82;
+    Lilo.KEY_V = 86;
+    Lilo.KEY_H = 72;
+    Lilo.KEY_P = 80;
+    Lilo.KEY_T = 84;
+    Lilo.KEY_N = 78;
+    Lilo.KEY_S = 83;
+    Lilo.KEY_O = 79;
+    Lilo.KEY_X = 88;
+    Lilo.KEY_Q = 81;
+    Lilo.KEY_Y = 89;
+    Lilo.KEY_Z = 90;
+    Lilo.KEY_PLUS = 187;
+    Lilo.KEY_MINUS = 189;
+    Lilo.KEY_H = 72;
+    Lilo.KEY_LEFTANGLEBRACKET = 188;
     Lilo.KEY_RIGHTANGLEBRACKET = 190;
-    Lilo.KEY_ONE               = 49;
-    Lilo.KEY_TWO               = 50;
-    Lilo.KEY_THREE             = 51;
-    Lilo.KEY_FOUR              = 52;
+    Lilo.KEY_ONE = 49;
+    Lilo.KEY_TWO = 50;
+    Lilo.KEY_THREE = 51;
+    Lilo.KEY_FOUR = 52;
 
-    Lilo.AUTO    = -1;
-    Lilo.PIXELS  = 0;
+    Lilo.AUTO = -1;
+    Lilo.PIXELS = 0;
     Lilo.PERCENT = 1;
 
     Lilo.KEYBOARD_TEXT   = 0;   // Represents a generic text input keyboard.
@@ -466,10 +457,12 @@ var Lilo = Lilo || {}; // Use existing namespace, or create a new one if it does
             obj.itemcolor = (params.itemcolor) ? params.itemcolor : obj.itemcolor;
             obj.focusShift = (params.focusShift) ? false : obj.focusShift;
             obj.caret = (params.caret) ? params.caret : obj.caret;
-            obj.glControl = (params.glControl == true) ? true : false;
-            obj.priority = (params.priority) ? params.priority : 0;
-            obj.renderTarget = (params.renderTarget+1) ? params.renderTarget : null;
-            obj.onrenderdone = (params.onrenderdone) ? params.onrenderdone : obj.onrenderdone;
+            obj.hasArrow = (params.hasArrow == true) ? true : false;4
+            obj.onValueDown = params.onValueDown ? params.onValueDown : obj.onValueDown;
+            obj.onValueUp = params.onValueUp ? params.onValueUp : obj.onValueUp;
+            obj.state = params.state ? params.state : obj.state;
+            obj.hasWordings = (params.hasWordings == true) ? true : false;
+            
 
             if (obj.opacity < 0) obj.opacity = 0;
         },  
@@ -550,6 +543,26 @@ var Lilo = Lilo || {}; // Use existing namespace, or create a new one if it does
             }
             return (result);
         },
+		
+		ApplyControlTransformationTopLeft: function( control, ctx )
+		{
+			// Set Control Render Transformation
+            if( control.position == Lilo.POSITION_ABSOLUTE )
+                ctx.translate( control.x, control.y );
+            else if( control.position == Lilo.POSITION_RELATIVE )
+                ctx.translate( control.container.x + control.x, control.container.y + control.y );
+		},
+		
+		ApplyControlTransformationCenter: function( control, ctx )
+		{
+			// Set Control Render Transformation
+            if( control.position == Lilo.POSITION_ABSOLUTE )
+                ctx.translate( control.x + (control.width / 2), control.y + (control.height / 2) );
+            else if( control.position == Lilo.POSITION_RELATIVE )
+				ctx.translate(control.container.x + control.x + (control.width/2), control.container.y + control.y + (control.height / 2));
+
+            ctx.rotate( control.rotation * Math.PI / 180 );	
+		},
 
         ResetContainers: function(obj) {
 
@@ -688,28 +701,41 @@ var Lilo = Lilo || {}; // Use existing namespace, or create a new one if it does
                 }
             }
             return(c);
-        }
+        },
 
+        PointInRect: function( x, y, ox, oy, ow, oh )
+        {
+            return    x >= ox 
+                   && x < ox + ow
+                   && y >= oy
+                   && y < oy + oh
+        },
+
+        UpdateZOrder: function( container, zorder )
+        {
+            container.zorder = zorder;
+            if( !container.controls) 
+                return;
+                 
+            for( var i = 0; i < container.controls.length; i++ )
+            {
+                var c = container.controls[i];
+                Lilo.Internal.UpdateZOrder( c, zorder + 1 );
+            }
+        }
     };
 
     //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
     // LILO.ENGINE
     //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
     Lilo.Engine = {
-        DEBUG: true,
         version: "1.0.0",
         initialized: false,
-        mode : Lilo.CANVAS,
         target: Lilo.DESKTOP,
         canvas: null,
         textCanvas: null,
-        glCanvas : null,
-        glDepth : false,
-        fboTextures : [],
-        framebuffers : [],
-        activeFrameBuffer : -1,
         ctx: null,
-        _glCtx : null,
+        ctxGL: null,
         textCtx: null,
         textCache: {},
         activeView: 0,
@@ -720,7 +746,6 @@ var Lilo = Lilo || {}; // Use existing namespace, or create a new one if it does
         fps: 0,
         width: 0,
         height: 0,
-        aspect: 1,
         mouseX: 0,
         mouseY: 0,
         oldMouseX: 0,
@@ -777,7 +802,8 @@ var Lilo = Lilo || {}; // Use existing namespace, or create a new one if it does
             return (typeof process !== "undefined") && process.versions && (process.versions.electron !== undefined);
         },
 		
-        NDCToScreen : function( v ) {
+        NDCToScreen : function( v )
+        {
             return( { x : v.x * Lilo.SCREEN_WIDTH, y : v.y * Lilo.SCREEN_HEIGHT } );
         },
 
@@ -833,13 +859,13 @@ var Lilo = Lilo || {}; // Use existing namespace, or create a new one if it does
             }
         },
 
-        OpenURL : function( url, target ) {
+        OpenURL : function(url) {
             //var dialog = new Cocoon.Widget.WebDialog();
             //dialog.show("http://www.ludei.com");
             if (navigator.isCocoonJS)
-                CocoonJS.App.openURL( url );
+                CocoonJS.App.openURL(url);
             else
-                window.open( url, target );
+                window.open(url, "_blank");
         },
 
         ApplyParam : function (obj, param, value) {
@@ -1210,12 +1236,12 @@ var Lilo = Lilo || {}; // Use existing namespace, or create a new one if it does
             if (mode == Lilo.CANVAS)
                 return (this.ctx);
             else
-                return (this._glCtx);
+                return (this.ctxGL);
         },
 
         touchTimer : function() {
             if(!Lilo.Engine.mouseDrag) Lilo.Engine.touchTime += 100;
-            if (Lilo.Engine.touchTime > 2000 && Lilo.Engine.mouseDragX < 30 && Lilo.Engine.mouseDragY < 30)
+            if (Lilo.Engine.touchTime > 2000 && Lilo.Engine.mouseDragX < 60 && Lilo.Engine.mouseDragY < 60)
             {
                 Lilo.Engine.mouseButtons[0] = 0;
                 Lilo.Engine.mouseButtons[2] = 1;
@@ -1273,14 +1299,15 @@ var Lilo = Lilo || {}; // Use existing namespace, or create a new one if it does
                 var dx = x - Lilo.Engine.lastTouchX;
                 var dy = y - Lilo.Engine.lastTouchY;
                 var dist = Math.sqrt((dx * dx) + (dy * dy));
-                var timeDif = Date.now() - Lilo.Engine.lastTouchStartTime;
+                var now = Date.now();
+                var timeDif = now - Lilo.Engine.lastTouchStartTime;
                 var isDoubleClickT = false;
-                if ((dist < 30 && Lilo.Engine.lastTouchX != 0) && (timeDif <= 500 && Lilo.Engine.lastTouchStartTime != 0)) {
+                if ((dist < 30 && Lilo.Engine.lastTouchX != 0) && (timeDif <= 200 && Lilo.Engine.lastTouchStartTime != 0)) {
                     Lilo.Engine.dblclickHandler({ clientX: (x | 0), clientY: (y | 0), button: 0, returnValue: false });
                     isDoubleClickT = true;
                 }
 
-                Lilo.Engine.lastTouchStartTime = Date.now();
+                Lilo.Engine.lastTouchStartTime = now;
                 Lilo.Engine.lastTouchX = x;
                 Lilo.Engine.lastTouchY = y;
 
@@ -1503,6 +1530,8 @@ var Lilo = Lilo || {}; // Use existing namespace, or create a new one if it does
         },
 
         wheelHandler : function(e) {
+            if (Lilo.Engine.mouseButtons[0] == 1 || Lilo.Engine.mouseButtons[2] == 1) return; // prevent mouse wheel zooming if either button is pressed (primarily to make life better with a mac magic mouse)
+
             var delta = 0;
             if (!event) /* For IE. */
                 event = window.event;
@@ -1562,202 +1591,12 @@ var Lilo = Lilo || {}; // Use existing namespace, or create a new one if it does
             if (Lilo.Engine.target == Lilo.MOBILE) {
                 Cocoon.App.exit();
             }
-	        else if ( Lilo.Engine.isElectron() )
-            {
-               window.close();
-            }
             else {
                 window.close();
             }
         },
 
-        CreateShader : function( type, source ) {
-            var gl = Lilo.Engine._glCtx;
-            var shader = gl.createShader( type );
-            gl.shaderSource( shader, source );
-            gl.compileShader( shader );
-            var success = gl.getShaderParameter( shader, gl.COMPILE_STATUS );
-            if ( success ) {
-                return shader;
-            }
-            console.log( gl.getShaderInfoLog( shader ) );
-            gl.deleteShader( shader );
-        },
-
-        CreateProgram : function( vertexShader, fragmentShader ) {
-            var gl = Lilo.Engine._glCtx;
-            var program = gl.createProgram();
-            gl.attachShader( program, vertexShader );
-            gl.attachShader( program, fragmentShader );
-            gl.linkProgram( program );
-            var success = gl.getProgramParameter( program, gl.LINK_STATUS );
-            if ( success ) {
-                return program;
-            } 
-            console.log( gl.getProgramInfoLog( program ) );
-            gl.deleteProgram( program );
-        },
-
-        CreateTexture : function( width, height ) {
-            var gl = this._glCtx;
-            var texture =  gl.createTexture();
-            gl.bindTexture( gl.TEXTURE_2D, texture );
-            // Set up texture so we can render any size image and so we are working with pixels.
-            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
-            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
-            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
-            gl.texImage2D( gl.TEXTURE_2D, 0, gl.RGBA, width, height, 0, gl.RGBA, gl.UNSIGNED_BYTE, null );
-            return texture;
-        },
-
-        CreateFrameBuffer : function( width, height ) {
-            var gl = this._glCtx;
-            var texture = Lilo.Engine.CreateTexture( width, height );
-            // Create a framebuffer
-            var fbo = gl.createFramebuffer();
-            Lilo.Engine.fboTextures.push( texture );
-            Lilo.Engine.framebuffers.push( { buffer: fbo, width: width, height: height } );
-            gl.bindFramebuffer( gl.FRAMEBUFFER, fbo );
-            // Attach a texture to it.
-            gl.framebufferTexture2D( gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, texture, 0 );
-            return( Lilo.Engine.framebuffers.length - 1 );
-        },
-
-        SetFrameBuffer : function( idx ) {
-            Lilo.Engine.activeFrameBuffer = idx;
-        },
-
-        RenderTarget : function( resolutionLocation, idx ) {
-            var gl = this._glCtx;
-            if( idx == -1 || idx == null )
-            {
-                    gl.bindFramebuffer( gl.FRAMEBUFFER, null );
-                    gl.uniform2f( resolutionLocation, Lilo.SCREEN_WIDTH, Lilo.SCREEN_HEIGHT );
-                    gl.viewport( 0, 0, Lilo.SCREEN_WIDTH, Lilo.SCREEN_HEIGHT );
-            }
-            else
-            {
-                var fbo = Lilo.Engine.framebuffers[ idx ].buffer;
-                var width = Lilo.Engine.framebuffers[ idx ].width;
-                var height = Lilo.Engine.framebuffers[ idx ].height;
-                if( fbo )
-                {
-                    gl.bindFramebuffer( gl.FRAMEBUFFER, fbo );
-                    gl.uniform2f( resolutionLocation, width, height );
-                    gl.viewport( 0, 0, width, height );
-                }
-            }
-        },
-
-        LoadFrameBuffer : function( src ) {
-            var vshadersrc = ' \n\
-                // an attribute will receive data from a buffer \n\
-                attribute vec2 a_position; \n\
-                attribute vec2 a_texCoord; \n\
-                \n\
-                uniform mat3 u_matrix; \n\
-                uniform vec2 u_resolution; \n\
-                varying vec2 v_texCoord; \n\
-                void main() { \n\
-                    \n\
-                    // Pass the texCoord to the fragment shader The GPU will interpolate this value between points \n\
-                    v_texCoord = a_texCoord; \n\
-                    \n\
-                    // gl_Position is a special variable a vertex shader is responsible for setting \n\
-                    vec2 positioncs = (((a_position / u_resolution) * 2.0) - 1.0) * vec2(1, -1);\n\
-                    vec2 position = (u_matrix * vec3(positioncs, 1)).xy; \n\
-                    gl_Position = vec4(position, 0, 1); \n\
-                    \n\
-                }';
-
-            var fshadersrc  = "precision mediump float; \n";
-            fshadersrc += "// our texture \n";
-            fshadersrc += "uniform sampler2D u_image; \n";
-            fshadersrc += "// the texCoords passed in from the vertex shader. \n";
-            fshadersrc += "varying vec2 v_texCoord; \n";
-            fshadersrc += "void main() { \n";
-            fshadersrc += "   // Look up a color from the texture. \n";
-            fshadersrc += "   gl_FragColor = texture2D(u_image,v_texCoord); \n";
-            fshadersrc += "}";
-
-            var vshader = Lilo.Engine.CreateShader( Lilo.Engine._glCtx.VERTEX_SHADER, vshadersrc );
-            var fshader = Lilo.Engine.CreateShader( Lilo.Engine._glCtx.FRAGMENT_SHADER, fshadersrc );
-            var program = Lilo.Engine.CreateProgram( vshader, fshader );
-            
-            var positionAttributeLocation = Lilo.Engine._glCtx.getAttribLocation( program, "a_position" );
-            var texCoordLocation          = Lilo.Engine._glCtx.getAttribLocation( program, "a_texCoord" );
-            var matrixLocation            = Lilo.Engine._glCtx.getUniformLocation( program, "u_matrix" );
-            var resolutionLocation        = Lilo.Engine._glCtx.getUniformLocation( program, "u_resolution" );
-            var positionBuffer            = Lilo.Engine._glCtx.createBuffer();
-            var texCoordBuffer            = Lilo.Engine._glCtx.createBuffer();
-
-            Lilo.Engine._glCtx.bindBuffer( Lilo.Engine._glCtx.ARRAY_BUFFER, positionBuffer );
-            var positions = [
-                0, 0,
-                0, Lilo.SCREEN_HEIGHT,
-                Lilo.SCREEN_WIDTH, Lilo.SCREEN_HEIGHT,
-                0, 0,
-                Lilo.SCREEN_WIDTH, Lilo.SCREEN_HEIGHT,
-                Lilo.SCREEN_WIDTH, 0];
-            Lilo.Engine._glCtx.bufferData( Lilo.Engine._glCtx.ARRAY_BUFFER, new Float32Array( positions ), Lilo.Engine._glCtx.STATIC_DRAW );
-            
-            Lilo.Engine._glCtx.bindBuffer( Lilo.Engine._glCtx.ARRAY_BUFFER, texCoordBuffer );
-            Lilo.Engine._glCtx.bufferData( Lilo.Engine._glCtx.ARRAY_BUFFER, new Float32Array([
-                0.0,  0.0,
-                0.0,  1.0,
-                1.0,  1.0,
-                0.0,  0.0,
-                1.0,  1.0,
-                1.0,  0.0]), Lilo.Engine._glCtx.STATIC_DRAW );
-
-            var translationMatrix = UE.Geometry.m3.translation( 0, 0 );
-            var rotationMatrix = UE.Geometry.m3.rotation( UE.Geometry.Deg2Rad( 0 ) );
-            var scaleMatrix = UE.Geometry.m3.scaling( 1, 1 );
-            var matrix = UE.Geometry.m3.multiply( scaleMatrix, translationMatrix );
-            matrix = UE.Geometry.m3.multiply( matrix, rotationMatrix );
-
-            Lilo.Engine._glCtx.blendFunc( Lilo.Engine._glCtx.SRC_ALPHA, Lilo.Engine._glCtx.ONE_MINUS_SRC_ALPHA );
-            Lilo.Engine._glCtx.enable( Lilo.Engine._glCtx.BLEND );
-            Lilo.Engine._glCtx.useProgram( program );
-
-            Lilo.Engine.RenderTarget( resolutionLocation, null );
-
-            // Set the matrix.
-            Lilo.Engine._glCtx.uniformMatrix3fv( matrixLocation, false, matrix );
-            // Set the resolution.
-            Lilo.Engine._glCtx.uniform2f( resolutionLocation, Lilo.SCREEN_WIDTH, Lilo.SCREEN_HEIGHT );
-
-            Lilo.Engine._glCtx.enableVertexAttribArray( positionAttributeLocation );
-            Lilo.Engine._glCtx.bindBuffer( Lilo.Engine._glCtx.ARRAY_BUFFER, positionBuffer ); // Bind the position buffer.
-            // Tell the attribute how to get data out of positionBuffer (ARRAY_BUFFER)
-            var size = 2;          // 2 components per iteration
-            var type = Lilo.Engine._glCtx.FLOAT;  // the data is 32bit floats
-            var normalize = false; // don't normalize the data
-            var stride = 0;        // 0 = move forward size * sizeof(type) each iteration to get the next position
-            var offset = 0;        // start at the beginning of the buffer
-            Lilo.Engine._glCtx.vertexAttribPointer( positionAttributeLocation, size, type, normalize, stride, offset );
-
-            Lilo.Engine._glCtx.enableVertexAttribArray( texCoordLocation );
-            Lilo.Engine._glCtx.bindBuffer( Lilo.Engine._glCtx.ARRAY_BUFFER, texCoordBuffer );
-            Lilo.Engine._glCtx.vertexAttribPointer( texCoordLocation, 2, Lilo.Engine._glCtx.FLOAT, false, 0, 0 );
-                
-            Lilo.Engine._glCtx.activeTexture( Lilo.Engine._glCtx.TEXTURE0 );
-            Lilo.Engine._glCtx.bindTexture( Lilo.Engine._glCtx.TEXTURE_2D, Lilo.Engine.fboTextures[ src ] );
-
-            var primitiveType = Lilo.Engine._glCtx.TRIANGLES;
-            var offset = 0;
-            var count = 6;
-            Lilo.Engine._glCtx.drawArrays( primitiveType, offset, count );            
-        },
-
-        SetDepthTesting : function( state ) {
-            Lilo.Engine.glDepth = state;
-        },
-
         Initialize: function (mode, prerender, postrender) {
-
-            this.mode = mode;
 
             if (!String.prototype.encodeHTML) {
                 String.prototype.encodeHTML = function () {
@@ -1787,61 +1626,35 @@ var Lilo = Lilo || {}; // Use existing namespace, or create a new one if it does
                 if (postrender)
                     Lilo.Engine.postRender = postrender;
 
-                if ( window.cordova )
+                if (navigator.isCocoonJS || (Cocoon.App != null && Cocoon.App != undefined))
                 {
                     Lilo.Engine.target = Lilo.MOBILE;
-                    if (navigator.isCocoonJS || (Cocoon.App != null && Cocoon.App != undefined))
-                    {
-                        Cocoon.Touch.enable();
-                        Cocoon.Touch.enableInWebView();
-                    }
+                    Cocoon.Touch.enable();
+                    Cocoon.Touch.enableInWebView();
                 }
                 else
                     Lilo.Engine.target = Lilo.DESKTOP;
-
-                for (var i = 0; i < 256; i++)
-                    Lilo.Engine.keyStates[i] = 0;
 
                 if (Lilo.Engine.target == Lilo.MOBILE)
                 {
                     // Primary Rendering Canvas Setup.
                     canvas = document.createElement(navigator.isCocoonJS ? 'screencanvas' : 'canvas');
-                    canvas.style.position = "absolute";
-                    canvas.style.left = "0px";
-                    canvas.style.top  = "0px";
-                    canvas.style.zIndex = 2;                    
                     if (window.devicePixelRatio != 1) {
                         canvas.style.width = window.innerWidth + "px";
                         canvas.style.height = window.innerHeight + "px";
                     }
                     canvas.width = (window.innerWidth * window.devicePixelRatio)|0;
                     canvas.height = (window.innerHeight * window.devicePixelRatio)|0;
-                    if (mode == Lilo.WEBGL) 
-                    {
-                        var canvas2 = document.createElement( 'canvas' );
-                        canvas2.id = "glcanvas";
-                        canvas2.style.position = "absolute";
-                        canvas2.style.left = "0px";
-                        canvas2.style.top  = "0px";                
-                        canvas2.style.zIndex = 1;   
-                        if (window.devicePixelRatio != 1) 
-                        {
-                            canvas2.style.width = window.innerWidth + "px";
-                            canvas2.style.height = window.innerHeight + "px";
-                        }
-                        canvas2.width = (window.innerWidth * window.devicePixelRatio)|0;
-                        canvas2.height = (window.innerHeight * window.devicePixelRatio)|0;
-                        Lilo.Engine.glCanvas = canvas2;                        
-                        Lilo.Engine._glCtx = canvas2.getContext( "experimental-webgl", { preserveDrawingBuffer: true, alpha: false } );
-                        if( Lilo.Engine._glCtx == null )
-                            canvas2.getContext( "webgl", { preserveDrawingBuffer: true, alpha: false } );
+                    if (mode == Lilo.WEBGL) {
+                        //ctxGL = canvas.getContext("experimental-webgl");
                     }
-
-                    ctx = canvas.getContext("2d",{ antialias: true, alpha: false });
-                    ctx.mozImageSmoothingEnabled = true;
-                    ctx.imageSmoothingQuality = "high";
-                    ctx.msImageSmoothingEnabled = true;
-                    ctx.imageSmoothingEnabled = true;
+                    else {
+                        ctx = canvas.getContext("2d");
+                        ctx.mozImageSmoothingEnabled = true;
+                        ctx.imageSmoothingQuality = "high";
+                        ctx.msImageSmoothingEnabled = true;
+                        ctx.imageSmoothingEnabled = true;
+                    }
 
                     document.body.appendChild(canvas);
                     window.addEventListener('resize', resizeLilo);
@@ -1849,11 +1662,7 @@ var Lilo = Lilo || {}; // Use existing namespace, or create a new one if it does
                 else
                 {
                     // Primary Rendering Canvas Setup.
-                    canvas = document.createElement( "canvas" );
-                    canvas.style.position = "absolute";
-                    canvas.style.left = "0px";
-                    canvas.style.top  = "0px";
-                    canvas.style.zIndex = 1;                                       
+                    canvas = document.createElement("canvas");
                     canvas.oncontextmenu = function (e) {
                         return (false);
                     }
@@ -1863,35 +1672,22 @@ var Lilo = Lilo || {}; // Use existing namespace, or create a new one if it does
                     }
                     canvas.width = (window.innerWidth * window.devicePixelRatio)|0;
                     canvas.height = (window.innerHeight * window.devicePixelRatio)|0;
-                    if (mode == Lilo.WEBGL) 
-                    {
-                        var canvas2 = document.createElement( 'canvas' );
-                        canvas2.id = "glcanvas";
-                        canvas2.style.position = "absolute";
-                        canvas2.style.left = "0px";
-                        canvas2.style.top  = "0px";                
-                        if (window.devicePixelRatio != 1) 
-                        {
-                            canvas2.style.width = window.innerWidth + "px";
-                            canvas2.style.height = window.innerHeight + "px";
-                        }
-                        canvas2.width = (window.innerWidth * window.devicePixelRatio)|0;
-                        canvas2.height = (window.innerHeight * window.devicePixelRatio)|0;
-                        Lilo.Engine.glCanvas = canvas2;                        
-                        Lilo.Engine._glCtx = canvas2.getContext( "experimental-webgl", { preserveDrawingBuffer: true, alpha: false } );
-                        if( Lilo.Engine._glCtx == null )
-                            canvas2.getContext( "webgl", { preserveDrawingBuffer: true, alpha: false } );
+                    if (mode == Lilo.WEBGL) {
+                        //ctxGL = canvas.getContext("experimental-webgl");
                     }
-
-                    ctx = canvas.getContext("2d", { antialias: true, alpha: false });
-                    ctx.mozImageSmoothingEnabled = true;
-                    ctx.imageSmoothingQuality = "high";
-                    ctx.msImageSmoothingEnabled = true;
-                    ctx.imageSmoothingEnabled = true;
-
+                    else {
+                        ctx = canvas.getContext("2d", { antialias: true, alpha: false });
+                        ctx.mozImageSmoothingEnabled = true;
+                        ctx.imageSmoothingQuality = "high";
+                        ctx.msImageSmoothingEnabled = true;
+                        ctx.imageSmoothingEnabled = true;
+                    }
                     document.body.appendChild(canvas);
                     window.addEventListener('resize', resizeLilo);
                     window.addEventListener("orientationchange", resizeLilo);
+
+                    for (var i = 0; i < 256; i++)
+                        Lilo.Engine.keyStates[i] = 0;
 
                     window.addEventListener('keydown', Lilo.Engine.keyDownHandler);
                     window.addEventListener('keyup', Lilo.Engine.keyUpHandler);
@@ -1937,7 +1733,7 @@ var Lilo = Lilo || {}; // Use existing namespace, or create a new one if it does
                     document.captureEvents(Event.MOUSEDOWN);
                 if (canvas.addEventListener)
                     canvas.addEventListener('DOMMouseScroll', Lilo.Engine.wheelHandler, false);
-                canvas.onmousewheel = document.onmousewheel = canvas.wheel = Lilo.Engine.wheelHandler;
+                canvas.onmousewheel = document.onmousewheel = Lilo.Engine.wheelHandler;
 
                 Lilo.Engine.isTouch = (('ontouchstart' in window) || (navigator.msMaxTouchPoints > 0));
 
@@ -1999,41 +1795,26 @@ var Lilo = Lilo || {}; // Use existing namespace, or create a new one if it does
         resizeLilo: function () {
             with (Lilo.Engine)
             {
-                if (window.devicePixelRatio != 1) {
-                    canvas.style.width = window.innerWidth + "px";
-                    canvas.style.height = window.innerHeight + "px";
-                    Lilo.Engine.glCanvas.style.width = window.innerWidth + "px";
-                    Lilo.Engine.glCanvas.style.height = window.innerHeight + "px";
-                }
-                canvas.width = (window.innerWidth * window.devicePixelRatio)|0;
-                canvas.height = (window.innerHeight * window.devicePixelRatio)|0;
-                Lilo.Engine.glCanvas.width = (window.innerWidth * window.devicePixelRatio)|0;
-                Lilo.Engine.glCanvas.height = (window.innerHeight * window.devicePixelRatio)|0;
+                canvas.width = window.innerWidth * window.devicePixelRatio;
+                canvas.height = window.innerHeight * window.devicePixelRatio;
                 width = canvas.width;
                 height = canvas.height;
                 Lilo.SCREEN_WIDTH = width;
                 Lilo.SCREEN_HEIGHT = height;
-
-                var ctx = Lilo.Engine.GetContext(Lilo.CANVAS);
-                ctx.mozImageSmoothingEnabled = true;
-                ctx.imageSmoothingQuality = "high";
-                ctx.msImageSmoothingEnabled = true;
-                ctx.imageSmoothingEnabled = true;
             }
         },
 
         Update: function () {
-
-            this.aspect = this.height / this.width;
             var ctx = Lilo.Engine.ctx;
+
+            if( navigator.isCocoonJS )
+                ctx.clear();
 
             if (Lilo.Engine.wheelPos != Lilo.Engine.oldWheelPos) {
                 Lilo.Engine.wheelDelta = Lilo.Engine.wheelPos - Lilo.Engine.oldWheelPos;
                 }
 
-                var ctime = performance.now();
-                Lilo.Engine.frameDuration = ctime - Lilo.Engine.frameTime;
-                Lilo.Engine.frameTime = ctime;
+                Lilo.Engine.frameTime = performance.now();
                 Lilo.Engine.frameDuration = Lilo.Engine.frameTime - Lilo.Engine.lastFrameTime;
                 if (Lilo.Engine.frameDuration == 0) Lilo.Engine.frameDuration = 1;
                 var fps = 1000 / Lilo.Engine.frameDuration;
@@ -2042,25 +1823,8 @@ var Lilo = Lilo || {}; // Use existing namespace, or create a new one if it does
                 ctx.fillStyle = "rgba(0,0,0,1.0)";
                 ctx.clearRect(0, 0, Lilo.SCREEN_WIDTH, Lilo.SCREEN_HEIGHT);
 
-                var glCtx = Lilo.Engine.GetContext( Lilo.WEBGL );
-                if( Lilo.Engine.mode == Lilo.WEBGL )
-                {
-                    glCtx.bindFramebuffer( glCtx.FRAMEBUFFER, null ); /* Default ensure no specific framebuffer is bound */
-                    glCtx.viewport( 0, 0, Lilo.SCREEN_WIDTH, Lilo.SCREEN_HEIGHT );
-                    glCtx.clearColor( 0, 0, 0, 1.0 );
-                    if( Lilo.Engine.glDepth )
-                    {
-                        // Enable depth tests
-                        glCtx.enable(glCtx.DEPTH_TEST);
-                        // Clear the depth buffer and color buffer
-                        glCtx.clear( glCtx.COLOR_BUFFER_BIT | glCtx.DEPTH_BUFFER_BIT );
-                    }
-                    else
-                        glCtx.clear( glCtx.COLOR_BUFFER_BIT );
-                }
-
                 if (Lilo.Engine.preRender)
-                    Lilo.Engine.preRender(Lilo.Engine._glCtx, ctx);
+                    Lilo.Engine.preRender(ctx);
 
                 Lilo.Engine.views[Lilo.Engine.activeView].Update(ctx);
                 Lilo.Engine.views[Lilo.Engine.activeView].Render(ctx);
@@ -2077,26 +1841,15 @@ var Lilo = Lilo || {}; // Use existing namespace, or create a new one if it does
                 }
 
                 if (Lilo.Engine.postRender)
-                    Lilo.Engine.postRender(Lilo.Engine._glCtx, ctx);
+                    Lilo.Engine.postRender(ctx);
 
-                /*Lilo.Engine.ctx.fillStyle = "rgba(100,0,0,1.0)";
+               /* Lilo.Engine.ctx.fillStyle = "rgba(100,0,0,1.0)";
                 var debugData = "FPS: " + fps.toFixed(2) + " (" + Lilo.Engine.width + " x " + Lilo.Engine.height + ")" + " [DPR=" + Lilo.Engine.DevicePixelRatio + "] Pointer: [" + Lilo.Engine.mouseX + "," + Lilo.Engine.mouseY + "] [" + Lilo.Engine.mouseButtons[0] + "," + Lilo.Engine.mouseButtons[1] + "," + Lilo.Engine.mouseButtons[2] + "] " + Lilo.Engine.mouseDeltaX;
                 if (Lilo.Engine.mouseDrag) debugData += " -> Dragging << " + Lilo.Engine.mouseDragX + ">>";
                 if (Lilo.Engine.activeCtrl) debugData += " -> Active Ctrl: [" + Lilo.Engine.activeCtrl.id + "]";
                 debugData += " wheel: " + Lilo.Engine.wheelPos + " " + Lilo.Engine.focusOffset + " kybdCtrl: " + ((Lilo.Engine.kybdFocusCtrl) ? Lilo.Engine.kybdFocusCtrl.id : "");
                 Lilo.Engine.ctx.fillText(debugData, 150, Lilo.SCREEN_HEIGHT - 30);
                 */
-                if( Lilo.Engine.DEBUG )
-                {
-                    Lilo.Engine.ctx.fillStyle = "rgba(255,0,0,1.0)";
-                    Lilo.Engine.ctx.font = "12px courier";
-                    Lilo.Engine.ctx.fillText( "fps:        " + Lilo.Engine.FPS.toFixed(1), 20, 120 );
-                    Lilo.Engine.ctx.fillText( "frame time: " + Lilo.Engine.frameDuration.toFixed(2), 20, 140 );
-                    Lilo.Engine.ctx.fillText( "pos:        " + Lilo.Engine.mouseX + "," + Lilo.Engine.mouseY, 20, 160 );
-                    Lilo.Engine.ctx.fillText( "button:     " + Lilo.Engine.mouseButtons[0], 20, 180 );
-                    Lilo.Engine.ctx.fillText( "drag:       " + Lilo.Engine.mouseDrag, 20, 200 );
-                }
-            
                 Lilo.Engine.oldWheelPos = Lilo.Engine.wheelPos;
                 Lilo.Engine.wheelDelta = 0;
                 Lilo.Engine.lastFrameTime = Lilo.Engine.frameTime;
@@ -2147,7 +1900,7 @@ var Lilo = Lilo || {}; // Use existing namespace, or create a new one if it does
             return( img );
         },
 
-        GetMaxTextLength : function(width, text, ctx, font) {
+        GetMaxTextLength : function(width, text, ctx, font) {           
             var cwidth = 0;
             var charCount = 0;
             for(var i=0;i<text.length;i++)
@@ -2208,11 +1961,9 @@ var Lilo = Lilo || {}; // Use existing namespace, or create a new one if it does
         }
 
         this.GetHitList = function( ctrl, results ) {
-            ctrl.hasHover = false;
             var c = ctrl.GetControls();
             for(var i=0;i<c.length;i++)
             {
-                c[i].hasHover = false;
                 if (!c[i].isVisible || !c[i].isActive) continue;
                 if(c[i].CheckBounds && c[i].CheckBounds())
                 {
@@ -2231,12 +1982,7 @@ var Lilo = Lilo || {}; // Use existing namespace, or create a new one if it does
             for (var i = 0; i < this.controls.length; i++)
             {
                 if(this.controls[i].Update && this.controls[i].isVisible)
-                {
-                    if( this.controls[i].glControl )
-                        this.controls[i].Update( Lilo.Engine.GetContext( Lilo.WEBGL ) );
-                    else
-                        this.controls[i].Update(ctx);
-                }
+                    this.controls[i].Update(ctx);
                 if(this.controls[i].modal && this.controls[i].isVisible)
                     Lilo.Engine.modalControl = this.controls[i];
             }
@@ -2354,8 +2100,7 @@ var Lilo = Lilo || {}; // Use existing namespace, or create a new one if it does
                          }
                     if (ctrlToSignal.pointerdown) ctrlToSignal.pointerdown();
                 }
-
-                if (!Lilo.Engine.mouseDrag && ctrlToSignal.click && Lilo.Engine.mouseButtons[0] == 0 && ctrlToSignal.clickstage == 1) {
+                if (!Lilo.Engine.mouseDrag && ctrlToSignal.click && Lilo.Engine.mouseButtons[2] == 0 && Lilo.Engine.mouseButtons[0] == 0 && ctrlToSignal.clickstage == 1) {
                     this.ClearFocus();
                     ctrlToSignal.hasFocus = true;
                     ctrlToSignal.clickstage = 0;
@@ -2379,8 +2124,8 @@ var Lilo = Lilo || {}; // Use existing namespace, or create a new one if it does
                 if (ctrlToSignal.rightclick && Lilo.Engine.mouseButtons[2] == 1 && ctrlToSignal.rclickstage == 0) {
                     ctrlToSignal.rclickstage = 1;
                 }
-                if (ctrlToSignal.rightclick && Lilo.Engine.mouseButtons[2] == 0 && ctrlToSignal.rclickstage == 1) {
-                    ctrlToSignal.rclickstage = 0;
+                if (ctrlToSignal.rightclick && ctrlToSignal.rclickstage == 1) {
+                    ctrlToSignal.rclickstage = 2;
                     // If the activated control is not the one with current keyboard focus, reset keyboard global focus.
                     if (Lilo.Engine.kybdFocusCtrl != null && Lilo.Engine.kybdFocusCtrl != ctrlToSignal) {
                         if (!Lilo.Engine.kybdFocusCtrl.edited) Lilo.Engine.kybdFocusCtrl.text = Lilo.Engine.kybdFocusCtrl.defaultValue;
@@ -2393,9 +2138,10 @@ var Lilo = Lilo || {}; // Use existing namespace, or create a new one if it does
                     ctrlToSignal.rightclick();
                 }
                
-                if (ctrlToSignal.isPointerDown && Lilo.Engine.mouseButtons[0] == 0) {
+                if (ctrlToSignal.isPointerDown && Lilo.Engine.mouseButtons[0] == 0 && Lilo.Engine.mouseButtons[2] == 0) {
                     ctrlToSignal.isPointerDown = false;
                     ctrlToSignal.clickstage = 0;
+                     ctrlToSignal.rclickstage = 0;
                     if (ctrlToSignal.pointerup) ctrlToSignal.pointerup();
                     if (Lilo.Engine.kybdFocusCtrl && Lilo.Engine.target == Lilo.MOBILE && Lilo.Engine.views[Lilo.Engine.activeView].focusShift)
                         Lilo.Engine.focusOffset = -(Lilo.Engine.kybdFocusCtrl.GetAbsoluteCoords().y - 200);
@@ -2411,71 +2157,35 @@ var Lilo = Lilo || {}; // Use existing namespace, or create a new one if it does
                 Lilo.Engine.activeCtrl = null;
         }
 
-        this.Render = function (ctx) 
-        {
-            var glCtx = Lilo.Engine.GetContext( Lilo.WEBGL );
+        this.Render = function (ctx) {
             if (this.isVisible)
             {
                 var controls = this.controls;
                 Lilo.Engine.SaveState();
-                if(Lilo.Engine.focusOffset != 0) 
-                    ctx.translate(0, Lilo.Engine.focusOffset);
+                ctx.translate(0, Lilo.Engine.focusOffset);
     
-                if( Lilo.Engine.mode == Lilo.WEBGL )
-                {
-                    for (var i = 0; i <controls.length; i++)
-                    {
-                        if( !controls[i].glControl ) continue;
-                        if (controls[i].isVisible)
-                        {
-                            var dim = Lilo.Internal.GetControlPoints(controls[i]);
-                            var pts = 0;
-                            for (var i2 = 0; i2 < 4; i2++)
-                            {
-                                if (dim[i2].x >= 0 && dim[i2].x <= Lilo.SCREEN_WIDTH && dim[i2].y >= 0 && dim[i2].y <= Lilo.SCREEN_HEIGHT)
-                                {
-                                    pts++;
-                                }
-                            }
-                            if (pts > 0) 
-                            {
-                                controls[i].Render( glCtx );
-                                if( controls[i].onrenderdone )
-                                    controls[i].onrenderdone( glCtx, ctx );
-                            }
-                        }
-                        else if (controls[i].styleLogic) {
-                            controls[i].styleLogic();
-                        }
-                    }
-                    
-                    ctx.drawImage(Lilo.Engine.glCanvas, 0, 0); /* This makes single gl control per view visible assumption */
-                }
-            
                 for (var i = 0; i <controls.length; i++)
                 {
-                    if ( controls[i].glControl ) continue;
                     if (controls[i].isVisible)
                     {
                         var dim = Lilo.Internal.GetControlPoints(controls[i]);
                         var pts = 0;
                         for (var i2 = 0; i2 < 4; i2++)
                         {
-                            if (dim[i2].x >= 0 && dim[i2].x <= Lilo.SCREEN_WIDTH && dim[i2].y >= 0 && dim[i2].y <= Lilo.SCREEN_HEIGHT)
+                            if (dim[i2].x >= 0 && dim[i2].x < Lilo.SCREEN_WIDTH && dim[i2].y >= 0 && dim[i2].y < Lilo.SCREEN_HEIGHT)
                             {
                                 pts++;
                             }
                         }
-                        if (pts > 0) 
-                        {
-                            controls[i].Render( ctx );
+                        if (pts > 0) {
+                            controls[i].Render(ctx);
                         }
                     }
                     else if (controls[i].styleLogic) {
                         controls[i].styleLogic();
                     }
                 }
-
+                //ctx.restore();
                 Lilo.Engine.RestoreState();
             }
         }
@@ -2665,6 +2375,7 @@ var Lilo = Lilo || {}; // Use existing namespace, or create a new one if it does
         this.controls = [];
         this.cachedcontrols = [];
         this.ctx = null;
+        this.createframe = 0; /* store the frame number when created, so we can delay rendering to ensure all updates are staged */
 
         //-------------------------
         // Generic Lilo Management.
@@ -2747,6 +2458,8 @@ var Lilo = Lilo || {}; // Use existing namespace, or create a new one if it does
                 this.init();
             }
         }
+
+        this.createframe = Lilo.Engine.frameNumber;
 
         this.AccelDrag = function ()
         {
@@ -2899,6 +2612,11 @@ var Lilo = Lilo || {}; // Use existing namespace, or create a new one if it does
         this.Add = function (ctrl) {
             ctrl.container = this;
             this.controls.push(ctrl);
+            this.SortCachedControlList();
+        }
+
+        this.SortCachedControlList = function()
+        {
             this.controls.sort(function (a, b) {
                 return (a.zorder-b.zorder);
             });
@@ -2960,7 +2678,11 @@ var Lilo = Lilo || {}; // Use existing namespace, or create a new one if it does
             return (false);
         }
 
-        this.Render = function (ctx) {
+        this.Render = function (ctx) 
+        {
+            /* Don't render a panel until at least 5 frames have passed to allow all updates to bubble */
+          //  if(Lilo.Engine.frameNumber < this.createframe+5)
+            //    return;
 
             Lilo.Engine.SaveState();
 
@@ -3009,8 +2731,8 @@ var Lilo = Lilo || {}; // Use existing namespace, or create a new one if it does
                 if(this.shadow)
                 {
                     ctx.shadowColor = '#333';
-                    ctx.shadowBlur = 3;
-                    ctx.shadowOffsetX = 0;
+                    ctx.shadowBlur = 10;
+                    ctx.shadowOffsetX = 3;
                     ctx.shadowOffsetY = 5;
                 }
 
@@ -3108,13 +2830,11 @@ var Lilo = Lilo || {}; // Use existing namespace, or create a new one if it does
         //-------------------------
         // Image specific.
         //-------------------------
-        this.imageLinks = [];
         this.srcwidth = 0;
         this.srcheight = 0;
         this.imgsrc = imgsrc;
         this._imgReady = false;
         this._img = new Image();
-        this.loaded = false;
         var obj = this;
         this._img.onload = function ()
         {
@@ -3123,11 +2843,11 @@ var Lilo = Lilo || {}; // Use existing namespace, or create a new one if it does
             obj.srcheight = this.height;
             obj.aspect = this.height / this.width;
             Lilo.Engine.imageCache[imgsrc] = this;
-            obj.loaded = true;
         }
         this._img.src = imgsrc;
         this.aspect = params.height / params.width;
-
+        this.scale = 1;
+        
         //-------------------------
         // Generic Lilo Management.
         //-------------------------
@@ -3177,7 +2897,7 @@ var Lilo = Lilo || {}; // Use existing namespace, or create a new one if it does
         this.animate = null;
 
         if ( params ) {
-            Lilo.Internal.ApplyParams( this, params );           
+            Lilo.Internal.ApplyParams( this, params );
         }
 
         this.SetParams = function ( params ) {
@@ -3190,28 +2910,6 @@ var Lilo = Lilo || {}; // Use existing namespace, or create a new one if it does
 
         this.ClearFocus = function () {
             this.hasFocus = false;
-        }
-
-        this.AddImageLink = function ( lnk ) {
-            this.imageLinks.push( lnk );
-        }
-
-        this.HandleImageLinks = function() {
-            var coords = Lilo.Engine.GetPointer();
-            var scalex = this.width / this.srcwidth;
-            var scaley = this.height / this.srcheight;
-            var abs = Lilo.Internal.GetAbsCoords( this );
-            for(var i=0;i<this.imageLinks.length;i++)            
-            {
-                if( coords.x >= abs.x + (this.imageLinks[i].x1 * scalex) && 
-                    coords.x <= abs.x + (this.imageLinks[i].x2 * scalex) && 
-                    coords.y >= abs.y + (this.imageLinks[i].y1 * scaley) &&
-                    coords.y <= abs.y + (this.imageLinks[i].y2 * scaley) )
-                    {
-                        Lilo.Engine.OpenURL( this.imageLinks[i].link, this.imageLinks[i].target );
-                    }
-            }
-
         }
 
         this.Update = function ( ctx ) {
@@ -3275,7 +2973,7 @@ var Lilo = Lilo || {}; // Use existing namespace, or create a new one if it does
         }
 
         this.Render = function ( ctx ) {
-            if(this.isVisible && this.loaded)            
+            if(this.isVisible)            
             {
                 Lilo.Engine.SaveState();
                 if (this.position == Lilo.POSITION_ABSOLUTE)
@@ -3283,15 +2981,13 @@ var Lilo = Lilo || {}; // Use existing namespace, or create a new one if it does
                 else if (this.position == Lilo.POSITION_RELATIVE)
                     ctx.translate(this.container.x + this.x + (this.width / 2), this.container.y + this.y + (this.height / 2));
                 ctx.rotate(this.rotation * Math.PI / 180);
+                ctx.scale(this.scale,this.scale);
                 ctx.globalAlpha = this.opacity;
                 ctx.drawImage(this._img, -(this.width / 2), -(this.height / 2), this.width, this.height);
                 Lilo.Engine.RestoreState();
             }
         }
 
-        if (this.init) {
-            this.init();
-        }
     }
 
     //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -3866,6 +3562,12 @@ var Lilo = Lilo || {}; // Use existing namespace, or create a new one if it does
         }
 
         this.Render = function (ctx) {
+            //Lilo.Engine.SaveState();
+           /* if (this.position == Lilo.POSITION_ABSOLUTE)
+                ctx.translate(this.x + (this.width / 2), this.y + (this.height / 2));
+            else if (this.position == Lilo.POSITION_RELATIVE)
+                ctx.translate(this.container.x + this.x + (this.width / 2), this.container.y + this.y + (this.height / 2));
+*/
             var x, y;
             if (this.position == Lilo.POSITION_ABSOLUTE)
             {
@@ -3884,8 +3586,11 @@ var Lilo = Lilo || {}; // Use existing namespace, or create a new one if it does
             if(this.background != "")
             {
                 ctx.fillStyle = this.background;
+                //ctx.fillRect(-(this.width/2), -(this.height/2), this.width, this.height);
                 ctx.fillRect(x, y, this.width, this.height);
             }
+
+            //Lilo.Engine.RestoreState();
         }
     }
 
@@ -3979,9 +3684,6 @@ var Lilo = Lilo || {}; // Use existing namespace, or create a new one if it does
             if (this.styleLogic != null) {
                 this.styleLogic();
             }
-
-            if( this.animate )
-                this.animate();
         }
 
         this.FadeIn = function (duration) {
@@ -5390,7 +5092,7 @@ var Lilo = Lilo || {}; // Use existing namespace, or create a new one if it does
         this.GetContentDimensions = function () {
             return (Lilo.Internal.GetDimensionsRecursive(this));
         }
-
+		
         this.Add = function (ctrl) {
            ctrl.container = this;
             this.controls.push(ctrl);
@@ -6294,6 +5996,9 @@ var Lilo = Lilo || {}; // Use existing namespace, or create a new one if it does
         this.dividerheight = 0;
         this.dividercolor = null;
         this.itemcolor = "rgba(0,0,0,1.0)";
+        this.hasArrow = false;
+        this.arrowcolor = "";
+
 
         //-------------------------
         // Generic Lilo Management.
@@ -6414,7 +6119,7 @@ var Lilo = Lilo || {}; // Use existing namespace, or create a new one if it does
             var i = this.items.length - 1;
             var lbl = new Lilo.Label("itemlbl"+i, itemText, {
                 x: this.itemX, y: (i*(this.itemheight))+(i*this.dividerheight), z: 12, position: Lilo.POSITION_RELATIVE, radius: 0, opacity: 1.0, textAlign: 'left', 
-                background: this.itemcolor, foreground: this.foreground, fontFace: this.fontFace, fontSize: this.fontSize,
+                background: this.itemcolor, foreground: this.foreground, fontFace: this.fontFace, fontSize: this.fontSize,fontWeight:this.fontWeight,
                 width: 200, height: this.itemheight, refObj : { pos: i }, gradient: this.gradient, imageCache: true,
                 style: function () {
                     this.width = this.container.width-this.container.itemX;
@@ -6477,7 +6182,7 @@ var Lilo = Lilo || {}; // Use existing namespace, or create a new one if it does
             var i = this.items.length;
             var lbl = new Lilo.Label("itemlbl"+i, itemText, {
                 x: this.itemX, y: 0, z: 12, position: Lilo.POSITION_RELATIVE, radius: 0, opacity: 1.0, textAlign: 'left',
-                background: this.itemcolor, foreground: this.foreground, fontFace: this.fontFace, fontSize: this.fontSize,
+                background: this.itemcolor, foreground: this.foreground, fontFace: this.fontFace, fontSize: this.fontSize,fontWeight:this.fontWeight,
                 width: 200, height: this.itemheight, refObj : { pos:0 }, gradient: this.gradient, imageCache: true,
                 style: function () {
                     this.width = this.container.width-this.container.itemX;
@@ -6743,7 +6448,6 @@ var Lilo = Lilo || {}; // Use existing namespace, or create a new one if it does
         }
 
         this.Render = function (ctx) {
-
             Lilo.Engine.SaveState();
 
             if (this.position == Lilo.POSITION_ABSOLUTE)
@@ -6787,8 +6491,12 @@ var Lilo = Lilo || {}; // Use existing namespace, or create a new one if it does
                         fillstyle = fillstyle.substring(0, i) + "," + this.opacity + ")";
                     }
                 }
+				
+				if( this.IsFloorList != null )
+					fillstyle="rgba(255,255,255,1.0)";
+				
                 ctx.fillStyle = fillstyle;
-                
+				
                 if(this.shadow)
                 {
                     ctx.shadowColor = '#333';
@@ -6804,7 +6512,7 @@ var Lilo = Lilo || {}; // Use existing namespace, or create a new one if it does
                     Lilo.Internal.roundRect(ctx, -(this.width / 2), -(this.height / 2), this.width, this.height, this.radius, true, false);
                 }
             }
-
+			
             if (this.hideoverflow)
                 Lilo.Engine.SetClip(-(this.width / 2), -(this.height / 2), this.width, this.height);
 
@@ -6899,7 +6607,7 @@ var Lilo = Lilo || {}; // Use existing namespace, or create a new one if it does
         {
             var lbl = new Lilo.Label("itemlbl"+i, this.items[i].text, {
                 x: this.itemX, y: (i*(this.itemheight))+(i*this.dividerheight), z: 11, position: Lilo.POSITION_RELATIVE, radius: 0, opacity: 1.0,  textAlign: 'left',
-                background: this.itemcolor, foreground: this.foreground, fontFace: this.fontFace, fontSize: this.fontSize,
+                background: this.itemcolor, foreground: this.foreground, fontFace: this.fontFace, fontSize: this.fontSize,fontWeight:this.fontWeight,
                 width: 200, height: this.itemheight, refObj : { pos:i }, gradient: this.gradient, imageCache: true, 
                 style: function () {
                     this.width = this.container.width-this.container.itemX;
@@ -6940,6 +6648,27 @@ var Lilo = Lilo || {}; // Use existing namespace, or create a new one if it does
                 }
             });
             this.items[i].lblCtrl = lbl;
+
+            if (this.hasArrow) {
+                this.items[i].lblCtrl.baseRender = this.items[i].lblCtrl.Render;
+                this.items[i].lblCtrl.Render = function (ctx) {
+                    this.baseRender(ctx);
+
+                    Lilo.Engine.SaveState();
+                    ctx.strokeStyle = this.container.arrowcolor;
+                    ctx.lineWidth = 3;
+                    var cy = this.y + 10;
+                    ctx.beginPath();
+                    ctx.moveTo((this.width - this.height * 0.4) - 25, cy + this.height * 0.1);
+                    ctx.lineTo((this.width - (this.height * 0.4) / 2) - 25, cy + this.height * 0.3);
+                    ctx.lineTo((this.width - this.height * 0.4) - 25, cy + this.height * 0.5);
+                    ctx.stroke();
+
+                    Lilo.Engine.RestoreState();
+                }
+            }
+            
+
             this.Add( lbl );
             
             if( this.items[i].selected ) 
@@ -7495,7 +7224,7 @@ var Lilo = Lilo || {}; // Use existing namespace, or create a new one if it does
 
         var cy = 10 + this.headerheight;
 
-        this.Add( this.menuitems[0].control );
+this.Add( this.menuitems[0].control );
         for(var i=0;i<this.menuitems.length;i++)
         {
             if(!this.menuitems[i].divider)
@@ -7553,6 +7282,7 @@ var Lilo = Lilo || {}; // Use existing namespace, or create a new one if it does
 
         this.state = 0;
         this.controlx = 0;
+        this.onchange = null;
 
         //-------------------------
         // Generic Lilo Management.
@@ -7585,6 +7315,7 @@ var Lilo = Lilo || {}; // Use existing namespace, or create a new one if it does
         this.rclickstage = 0;
         this.isPointerDown = false;
         this.tabindex = -1;
+        this.hasWordings = false;
 
         //---------------------------------
         // Generic Event Handler Delegates.
@@ -7659,6 +7390,14 @@ var Lilo = Lilo || {}; // Use existing namespace, or create a new one if it does
             this.state = (this.state == 0) ? 1 : 0;
             if(this.userclick)
                 this.userclick();
+            if(this.onchange)
+                this.onchange();
+        }
+
+        this.pointerup = function()
+        {
+            if(this.onchange)
+                this.onchange();
         }
 
         this.Render = function (ctx) {
@@ -7678,13 +7417,40 @@ var Lilo = Lilo || {}; // Use existing namespace, or create a new one if it does
                 ctx.fillStyle = 'rgba(120,120,120,1)';
             ctx.lineWidth = 1;
             ctx.strokeStyle = this.background;
-            Lilo.Internal.roundRect(ctx, -(this.width / 2), -(this.height / 2), this.width, this.height, 25, true, true);
+           // Lilo.Internal.roundRect(ctx, -(this.width / 2), -(this.height / 2), this.width, this.height, 25, true, true);
+
+
+            // left half circle 
+            ctx.beginPath();
+            ctx.arc(this.controlx, 0, (this.height / 2), 0.5 * Math.PI, 1.5 * Math.PI, false);
+            ctx.fill();
+
+            //center block
+            ctx.fillRect(this.controlx - 1, -(this.height / 2), this.width - (this.width / 2) + 2, this.height);
+
+            // right half circle
+            ctx.beginPath();
+            ctx.arc(this.controlx + this.width - (this.width / 2), 0, (this.height / 2), 0.5 * Math.PI, 1.5 * Math.PI, true);
+            ctx.fill();
 
             ctx.beginPath();
-            if(this.state == 0)
-                ctx.arc( this.controlx , 0, (this.height/2)-2, 0, 2 * Math.PI, false );
+            
+            if (this.state == 0)
+                ctx.arc(this.controlx, 0, (this.height / 2), 0, 2 * Math.PI, false);
             else
-                ctx.arc( this.controlx+this.width-(this.height+4) , 0, (this.height/2)-2, 0, 2 * Math.PI, false );
+                ctx.arc(this.controlx + this.width - (this.width / 2), 0, (this.height / 2), 0, 2 * Math.PI, false);
+
+            if (this.hasWordings) {
+                if (this.font != "") {
+                    ctx.font = this.fontWeight + " " + this.fontSize + "px " + this.fontFace;
+                }
+                ctx.fillStyle = 'white';
+                if (this.state == 0)
+                    ctx.fillText("OFF", this.controlx + this.width / 4, this.height / 5);
+                else
+                    ctx.fillText("ON", this.controlx - 2, this.height / 5);
+            }
+    
             ctx.fillStyle = 'white';
             ctx.fill();
             ctx.strokeStyle = this.background;
@@ -7988,68 +7754,9 @@ var Lilo = Lilo || {}; // Use existing namespace, or create a new one if it does
     }
 
     //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-    // Lilo.Texture
+    // LILO.ValueChange  -> + | - value change control 
     //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-    Lilo.Texture = function ( src, minf, maxf ) {
-        
-        this._img   = new Image();
-        this.width  = 0;
-        this.height = 0;
-        this.loaded = false;
-        this._glTexture = null;
-        this.aspect = 0;
-        var self = this;
-        
-        this._img.onload = function() {
-            
-            self.width = this.width;
-            self.height = this.height;
-            self.loaded = true;
-            self.aspect = (this.width/this.height);
-            var gl = Lilo.Engine._glCtx;
-
-            // Create a texture.
-            self._glTexture = Lilo.Engine._glCtx.createTexture();
-            Lilo.Engine._glCtx.bindTexture( gl.TEXTURE_2D, self._glTexture );
- 
-            // Set the parameters so we can render any size image.
-            gl.texParameteri( gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE );
-            gl.texParameteri( gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE );
-            gl.texParameteri( gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, minf );
-            gl.texParameteri( gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, maxf );
- 
-            // Upload the image into the texture.
-            gl.texImage2D( gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, self._img );
-
-        }
-
-        this._img.src = src;
-    };
-
-    //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-    // LILO.GLCheckerBoard
-    //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-    Lilo.GLCheckerBoard = function ( id, params ) {
-
-        //-------------------------
-        // GLCheckerboard specific.
-        //-------------------------
-        this._ctx = Lilo.Engine.GetContext( Lilo.WEBGL );
-        this.fxrotation   = 0.0;
-        this.fxscale      = 1.3;
-        this.fxposition   = [ 0.0, 0.0 ];
-        this.program      = null;
-        this.vshader      = null;
-        this.fshader      = null;
-
-        this.positionAttributeLocation = null;
-        this.positionBuffer            = null;
-        this.texCoordLocation          = null;
-        this.texCoordBuffer            = null;
-        this.matrixLocation            = null;
-
-        this.priority = 0;
-        this.renderTarget = null;
+    Lilo.ValueChange = function (id, params) {
 
         //-------------------------
         // Generic Lilo Management.
@@ -8067,6 +7774,7 @@ var Lilo = Lilo || {}; // Use existing namespace, or create a new one if it does
         this.scale = 1.0;
         this.rotation = 0.0;
         this.opacity = 1.0;
+        this.oldopacity = 1.0;
         this.radius = 0.0;
         this.hasHover = false;
         this.hasFocus = false;
@@ -8081,12 +7789,14 @@ var Lilo = Lilo || {}; // Use existing namespace, or create a new one if it does
         this.clickstage = 0;
         this.rclickstage = 0;
         this.isPointerDown = false;
+        this.gradient = null;
         this.tabindex = -1;
+        this.lastbutton = 0;
+        this.timerid = null;
 
         //---------------------------------
         // Generic Event Handler Delegates.
         //---------------------------------
-        this.onrenderdone = null;
         this.hover = null;
         this.unhover = null;
         this.click = null;
@@ -8098,83 +7808,12 @@ var Lilo = Lilo || {}; // Use existing namespace, or create a new one if it does
         this.keyup = null;
         this.drag = null;
         this.wheel = null;
-        this.animate = null;
+        this.onValueDown = null;
+        this.onValueUp = null;
 
         if (params) {
             Lilo.Internal.ApplyParams(this, params);
         }
-
-        this.vshadersrc = ' \n\
-            // an attribute will receive data from a buffer \n\
-            attribute vec2 a_position; \n\
-            attribute vec2 a_texCoord; \n\
-            \n\
-            uniform vec2 a_resolution; \n\
-            uniform mat3 u_matrix; \n\
-            varying vec2 v_texCoord; \n\
-            \n\
-            // all shaders have a main function \n\
-            void main() { \n\
-                \n\
-                // Pass the texCoord to the fragment shader The GPU will interpolate this value between points \n\
-                v_texCoord = a_texCoord; \n\
-                \n\
-                // gl_Position is a special variable a vertex shader is responsible for setting \n\
-                vec2 position = (u_matrix * vec3(a_position, 1)).xy; \n\
-                gl_Position = vec4(position, 0, 1); \n\
-                \n\
-            }';
-
-        this.fshadersrc  = "precision mediump float; \n";
-
-        this.fshadersrc += "vec4 col1 = vec4(0.0,0.0,0.0,0.0); \n";
-        this.fshadersrc += "vec4 col2 = vec4(1.0,1.0,1.0,0.7); \n";
-        this.fshadersrc += "// our texture \n";
-        this.fshadersrc += "// the texCoords passed in from the vertex shader. \n";
-        this.fshadersrc += "varying vec2 v_texCoord; \n";
-        this.fshadersrc += "vec4 checker3D(vec2 texc, vec4 color0, vec4 color1);\n";
-        this.fshadersrc += "vec4 checker3D(vec2 texc, vec4 color0, vec4 color1) { \n";
-        this.fshadersrc += "   if ( mod( floor(texc.x*10.0) + floor(texc.y*10.0), 2.0 ) == 0.0)\n";
-        this.fshadersrc += "      return color0;\n";
-        this.fshadersrc += "   else\n";
-        this.fshadersrc += "      return color1;\n";
-        this.fshadersrc += "} \n";
-        this.fshadersrc += "void main() { \n";
-        this.fshadersrc += "   // Look up a color from the texture. \n";
-        this.fshadersrc += "   gl_FragColor = checker3D(v_texCoord, col1, col2); \n";
-        this.fshadersrc += "}";
-
-        this.vshader = Lilo.Engine.CreateShader( Lilo.Engine._glCtx.VERTEX_SHADER, this.vshadersrc );
-        this.fshader = Lilo.Engine.CreateShader( Lilo.Engine._glCtx.FRAGMENT_SHADER, this.fshadersrc );
-        this.program = Lilo.Engine.CreateProgram( this.vshader, this.fshader );
-        
-        this.positionAttributeLocation = Lilo.Engine._glCtx.getAttribLocation( this.program, "a_position" );
-        this.texCoordLocation          = Lilo.Engine._glCtx.getAttribLocation( this.program, "a_texCoord" );
-        this.matrixLocation            = Lilo.Engine._glCtx.getUniformLocation( this.program, "u_matrix" );
-        this.resolutionLocation        = Lilo.Engine._glCtx.getUniformLocation( this.program, "u_resolution" );
-
-        this.positionBuffer            = Lilo.Engine._glCtx.createBuffer();
-        this.texCoordBuffer            = Lilo.Engine._glCtx.createBuffer();
-
-        Lilo.Engine._glCtx.bindBuffer( Lilo.Engine._glCtx.ARRAY_BUFFER, this.positionBuffer );
-        var positions = [
-            -1.0,  1.0,
-            -1.0, -1.0,
-             1.0, -1.0,
-            -1.0,  1.0,
-             1.0, -1.0,
-             1.0,  1.0
-        ];
-        Lilo.Engine._glCtx.bufferData( Lilo.Engine._glCtx.ARRAY_BUFFER, new Float32Array( positions ), Lilo.Engine._glCtx.STATIC_DRAW );
-        
-        Lilo.Engine._glCtx.bindBuffer( Lilo.Engine._glCtx.ARRAY_BUFFER, this.texCoordBuffer );
-        Lilo.Engine._glCtx.bufferData( Lilo.Engine._glCtx.ARRAY_BUFFER, new Float32Array([
-            0.0,  0.0,
-            0.0,  1.0,
-            1.0,  1.0,
-            0.0,  0.0,
-            1.0,  1.0,
-            1.0,  0.0]), Lilo.Engine._glCtx.STATIC_DRAW );
 
         this.SetParams = function (params) {
             Lilo.Internal.ApplyParams(this, params);
@@ -8189,13 +7828,9 @@ var Lilo = Lilo || {}; // Use existing namespace, or create a new one if it does
         }
 
         this.Update = function (ctx) {
-
             if (this.styleLogic != null) {
                 this.styleLogic();
             }
-            
-            if (this.animate)
-                this.animate( ctx );
         }
 
         this.CheckBounds = function () {
@@ -8215,303 +7850,117 @@ var Lilo = Lilo || {}; // Use existing namespace, or create a new one if it does
             return (false);
         }
 
-        this.GetContext = function ()
+        this.rightclick = function()
         {
-            return (this._ctx);
+            var obj = this;
+            this.timerid = setInterval(function() {
+                if(obj.lastbutton == 0 && obj.onValueDown)
+                    obj.onValueDown();
+                if(obj.lastbutton == 1 && obj.onValueUp)
+                    obj.onValueUp();
+            }, 500);
         }
 
-        this.Render = function ( ctx ) {
-            
-            var translationMatrix = UE.Geometry.m3.translation( this.fxposition[0], this.fxposition[1] );
-            var rotationMatrix = UE.Geometry.m3.rotation( UE.Geometry.Deg2Rad( this.fxrotation ) );
-            var scaleMatrix = UE.Geometry.m3.scaling( this.fxscale, this.fxscale*(Lilo.SCREEN_WIDTH/Lilo.SCREEN_HEIGHT) );
-            var matrix = UE.Geometry.m3.multiply( scaleMatrix, translationMatrix );//, rotationMatrix );
-            matrix = UE.Geometry.m3.multiply( matrix, rotationMatrix );
-
-            ctx.blendFunc( ctx.SRC_ALPHA, ctx.ONE_MINUS_SRC_ALPHA );
-            ctx.enable( ctx.BLEND );
-            ctx.useProgram( this.program );
-
-            /* Set the output of rendering to either a custom framebuffer or the primary gl context */
-            Lilo.Engine.RenderTarget( this.resolutionLocation, this.renderTarget );
-
-            // Set the matrix.
-            ctx.uniformMatrix3fv( this.matrixLocation, false, matrix );
-
-            ctx.enableVertexAttribArray( this.positionAttributeLocation );
-            ctx.bindBuffer( ctx.ARRAY_BUFFER, this.positionBuffer ); // Bind the position buffer.
-            // Tell the attribute how to get data out of positionBuffer (ARRAY_BUFFER)
-            var size = 2;          // 2 components per iteration
-            var type = ctx.FLOAT;  // the data is 32bit floats
-            var normalize = false; // don't normalize the data
-            var stride = 0;        // 0 = move forward size * sizeof(type) each iteration to get the next position
-            var offset = 0;        // start at the beginning of the buffer
-            ctx.vertexAttribPointer( this.positionAttributeLocation, size, type, normalize, stride, offset );
-
-            ctx.enableVertexAttribArray( this.texCoordLocation );
-            ctx.bindBuffer( ctx.ARRAY_BUFFER, this.texCoordBuffer );
-            ctx.vertexAttribPointer( this.texCoordLocation, 2, ctx.FLOAT, false, 0, 0 );
-
-            var primitiveType = ctx.TRIANGLES;
-            var offset = 0;
-            var count = 6;
-            ctx.drawArrays( primitiveType, offset, count );
-        }
-
-    }
-
-    //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-    // LILO.GLImage
-    //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-    Lilo.GLImage = function ( id, img, params ) {
-
-        //-------------------------
-        // GLImage specific.
-        //-------------------------
-        this._ctx = Lilo.Engine.GetContext( Lilo.WEBGL );
-        this.texture      = new Lilo.Texture( img, Lilo.Engine._glCtx.LINEAR, Lilo.Engine._glCtx.LINEAR );
-        this.aspect       = 0;
-        this.fxrotation   = 0.0;
-        this.fxscale      = 1.0;
-        this.fxposition   = [ 0.0, 0.0 ];
-        this.program      = null;
-        this.vshader      = null;
-        this.fshader      = null;
-
-        this.positionAttributeLocation = null;
-        this.positionBuffer            = null;
-        this.texCoordLocation          = null;
-        this.texCoordBuffer            = null;
-        this.matrixLocation            = null;
-        this.resolutionLocation        = null;
-
-        this.priority = 0;
-        this.renderTarget = null;
-
-        //-------------------------
-        // Generic Lilo Management.
-        //-------------------------
-        this.container = { x: 0, y: 0, width: Lilo.SCREEN_WIDTH, height: Lilo.SCREEN_HEIGHT }; // Default container.
-        this.id = id;
-        this.zorder = 0;
-        this.x = 0;
-        this.y = 0;
-        this.width = 0;
-        this.height = 0;
-        this.styleLogic = null;
-        this.background = "";
-        this.foreground = "";
-        this.scale = 1.0;
-        this.rotation = 0.0;
-        this.opacity = 1.0;
-        this.radius = 0.0;
-        this.hasHover = false;
-        this.hasFocus = false;
-        this.fontFace = "";
-        this.fontSize = 10;
-        this.fontWeight = "";
-        this.tabindex = 0;
-        this.isVisible = true;
-        this.isActive = true;
-        this.position = Lilo.POSITION_ABSOLUTE;
-        this.clipped = true;
-        this.clickstage = 0;
-        this.rclickstage = 0;
-        this.isPointerDown = false;
-        this.tabindex = -1;
-
-        //---------------------------------
-        // Generic Event Handler Delegates.
-        //---------------------------------
-        this.onrenderdone = null;        
-        this.hover = null;
-        this.unhover = null;
-        this.click = null;
-        this.pointerdown = null;
-        this.pointerup = null;
-        this.doubleclick = null;
-        this.rightclick = null;
-        this.keydown = null;
-        this.keyup = null;
-        this.drag = null;
-        this.wheel = null;
-        this.animate = null;
-
-        if (params) {
-            Lilo.Internal.ApplyParams(this, params);
-        }
-
-        this.vshadersrc = ' \n\
-            // an attribute will receive data from a buffer \n\
-            attribute vec2 a_position; \n\
-            attribute vec2 a_texCoord; \n\
-            \n\
-            uniform mat3 u_matrix; \n\
-            uniform vec2 u_resolution; \n\
-            varying vec2 v_texCoord; \n\
-            void main() { \n\
-                \n\
-                // Pass the texCoord to the fragment shader The GPU will interpolate this value between points \n\
-                v_texCoord = a_texCoord; \n\
-                \n\
-                // gl_Position is a special variable a vertex shader is responsible for setting \n\
-                vec2 positioncs = (((a_position / u_resolution) * 2.0) - 1.0) * vec2(1, -1);\n\
-                vec2 position = (u_matrix * vec3(positioncs, 1)).xy; \n\
-                gl_Position = vec4(position, 0, 1); \n\
-                \n\
-            }';
-
-        this.fshadersrc  = "precision mediump float; \n";
-        this.fshadersrc += "// our texture \n";
-        this.fshadersrc += "uniform sampler2D u_image; \n";
-        this.fshadersrc += "// the texCoords passed in from the vertex shader. \n";
-        this.fshadersrc += "varying vec2 v_texCoord; \n";
-        this.fshadersrc += "void main() { \n";
-        this.fshadersrc += "   // Look up a color from the texture. \n";
-        this.fshadersrc += "   gl_FragColor = texture2D(u_image,v_texCoord) * vec4(v_texCoord.x ,v_texCoord.y*1.2,v_texCoord.y,1.0); \n";
-        this.fshadersrc += "}";
-
-        this.vshader = Lilo.Engine.CreateShader( Lilo.Engine._glCtx.VERTEX_SHADER, this.vshadersrc );
-        this.fshader = Lilo.Engine.CreateShader( Lilo.Engine._glCtx.FRAGMENT_SHADER, this.fshadersrc );
-        this.program = Lilo.Engine.CreateProgram( this.vshader, this.fshader );
-        
-        this.positionAttributeLocation = Lilo.Engine._glCtx.getAttribLocation( this.program, "a_position" );
-        this.texCoordLocation          = Lilo.Engine._glCtx.getAttribLocation( this.program, "a_texCoord" );
-        this.matrixLocation            = Lilo.Engine._glCtx.getUniformLocation( this.program, "u_matrix" );
-        this.resolutionLocation        = Lilo.Engine._glCtx.getUniformLocation( this.program, "u_resolution" );
-        this.positionBuffer            = Lilo.Engine._glCtx.createBuffer();
-        this.texCoordBuffer            = Lilo.Engine._glCtx.createBuffer();
-
-        Lilo.Engine._glCtx.bindBuffer( Lilo.Engine._glCtx.ARRAY_BUFFER, this.positionBuffer );
-        var positions = [
-            this.x - (this.width/2), this.y - (this.height/2),
-            this.x - (this.width/2), this.y + (this.height/2),
-            this.x + (this.width/2), this.y + (this.height/2),
-            this.x - (this.width/2), this.y - (this.height/2),
-            this.x + (this.width/2), this.y + (this.height/2),
-            this.x + (this.width/2), this.y - (this.height/2)];
-        Lilo.Engine._glCtx.bufferData( Lilo.Engine._glCtx.ARRAY_BUFFER, new Float32Array( positions ), Lilo.Engine._glCtx.STATIC_DRAW );
-        
-        Lilo.Engine._glCtx.bindBuffer( Lilo.Engine._glCtx.ARRAY_BUFFER, this.texCoordBuffer );
-        Lilo.Engine._glCtx.bufferData( Lilo.Engine._glCtx.ARRAY_BUFFER, new Float32Array([
-            0.0,  0.0,
-            0.0,  1.0,
-            1.0,  1.0,
-            0.0,  0.0,
-            1.0,  1.0,
-            1.0,  0.0]), Lilo.Engine._glCtx.STATIC_DRAW );
-
-        this.GLUpdate = function()
+        this.pointerup = function()
         {
-            Lilo.Engine._glCtx.bindBuffer( Lilo.Engine._glCtx.ARRAY_BUFFER, this.positionBuffer );
-            var positions = [
-                this.x - (this.width/2), this.y - (this.height/2),
-                this.x - (this.width/2), this.y + (this.height/2),
-                this.x + (this.width/2), this.y + (this.height/2),
-                this.x - (this.width/2), this.y - (this.height/2),
-                this.x + (this.width/2), this.y + (this.height/2),
-                this.x + (this.width/2), this.y - (this.height/2)];
-            Lilo.Engine._glCtx.bufferData( Lilo.Engine._glCtx.ARRAY_BUFFER, new Float32Array( positions ), Lilo.Engine._glCtx.STATIC_DRAW );
+            clearInterval( this.timerid );
+            this.timerid = null;
         }
 
-        this.SetTexture = function( texture )
+        this.doubleclick = function()
         {
-            this.texture._glTexture = texture;
+            //this.click();
         }
 
-        this.SetParams = function (params) {
-            Lilo.Internal.ApplyParams(this, params);
-        }
+        this.click = function () {
 
-        this.GetControls = function () {
-            return ([]); // This is a singular control, cannot have children.
-        }
+            var p = Lilo.Engine.GetPointer();
+            var coords = Lilo.Internal.GetAbsCoords(this);
 
-        this.ClearFocus = function () {
-            this.hasFocus = false;
-        }
-
-        this.Update = function (ctx) {
-
-            if (this.styleLogic != null) {
-                this.styleLogic();
-            }
-            
-            if (this.animate)
-                this.animate( ctx );
-
-            this.GLUpdate();
-        }
-
-        this.CheckBounds = function () {
-            var coords = Lilo.Engine.GetPointer();
-            if (Lilo.Internal.PointInPoly(Lilo.Internal.GetControlPoints(this), coords.x, coords.y)) {
-                if (this.clipped) {
-                    if (Lilo.Internal.PointInPoly(Lilo.Internal.GetControlPoints(this.container), coords.x, coords.y)) {
-                        return (true);
-                    }
-                    else {
-                        return (false);
-                    }
+            if (Lilo.Internal.PointInRect(p.x, p.y, coords.x, coords.y, this.width / 2, this.height)) {
+                if (this.onValueDown)
+                {
+                    this.lastbutton = 0;
+                    this.onValueDown();
                 }
-                else
-                    return (true);
+
+            } else if (Lilo.Internal.PointInRect(p.x, p.y, coords.x + this.width / 2, coords.y, this.width / 2, this.height)) {
+                if (this.onValueUp)
+                {
+                    this.lastbutton = 1;
+                    this.onValueUp();
+                }
             }
-            return (false);
         }
 
-        this.GetContext = function ()
+        this.pointerdown = function () 
         {
-            return (this._ctx);
+            var p = Lilo.Engine.GetPointer();
+            var coords = Lilo.Internal.GetAbsCoords(this);            
+            if (Lilo.Internal.PointInRect(p.x, p.y, coords.x, coords.y, this.width / 2, this.height)) 
+            {
+                if (this.onValueDown)
+                    this.lastbutton = 0;
+            } 
+            else if (Lilo.Internal.PointInRect(p.x, p.y, coords.x + this.width / 2, coords.y, this.width / 2, this.height)) 
+            {
+                if (this.onValueUp)
+                    this.lastbutton = 1;
+            }
         }
 
-        this.Render = function ( ctx ) {
-            
-            if( !this.texture.loaded ) return;
-            
-            this.aspect = this.texture.aspect;
+        this.Render = function (ctx) {
 
-            var translationMatrix = UE.Geometry.m3.translation( this.fxposition[0], this.fxposition[1] );
-            var rotationMatrix = UE.Geometry.m3.rotation( UE.Geometry.Deg2Rad( this.fxrotation ) );
-            var scaleMatrix = UE.Geometry.m3.scaling( this.scale, this.scale/Lilo.Engine.aspect );
-            var matrix = UE.Geometry.m3.multiply( scaleMatrix, translationMatrix );
-            matrix = UE.Geometry.m3.multiply( matrix, rotationMatrix );
+            var x, y;
+            if (this.position == Lilo.POSITION_ABSOLUTE) {
+                x = this.x;
+                y = this.y;
+            }
+            else if (this.position == Lilo.POSITION_RELATIVE) {
+                x = this.x + this.container.x;
+                y = this.y + this.container.y;
+            }
 
-            ctx.blendFunc( ctx.SRC_ALPHA, ctx.ONE_MINUS_SRC_ALPHA );
-            ctx.enable( ctx.BLEND );
-            ctx.useProgram( this.program );
+            if (this.rotation != 0)
+                ctx.rotate(this.rotation * Math.PI / 180);
 
-            /* Set the output of rendering to either a custom framebuffer or the primary gl context */
-            Lilo.Engine.RenderTarget( this.resolutionLocation, this.renderTarget );
+            ctx.fillStyle = this.background;
+            ctx.strokeStyle = this.foreground;
+            ctx.lineWidth = 2.0;
 
-            // Set the matrix.
-            ctx.uniformMatrix3fv( this.matrixLocation, false, matrix );
-            // Set the resolution.
-            ctx.uniform2f( this.resolutionLocation, Lilo.SCREEN_WIDTH, Lilo.SCREEN_HEIGHT );
 
-            ctx.enableVertexAttribArray( this.positionAttributeLocation );
-            ctx.bindBuffer( ctx.ARRAY_BUFFER, this.positionBuffer ); // Bind the position buffer.
-            // Tell the attribute how to get data out of positionBuffer (ARRAY_BUFFER)
-            var size = 2;          // 2 components per iteration
-            var type = ctx.FLOAT;  // the data is 32bit floats
-            var normalize = false; // don't normalize the data
-            var stride = 0;        // 0 = move forward size * sizeof(type) each iteration to get the next position
-            var offset = 0;        // start at the beginning of the buffer
-            ctx.vertexAttribPointer( this.positionAttributeLocation, size, type, normalize, stride, offset );
+            if (this.radius == 0) {
+                ctx.strokeRect(x, y, this.width, this.height);
 
-            ctx.enableVertexAttribArray( this.texCoordLocation );
-            ctx.bindBuffer( ctx.ARRAY_BUFFER, this.texCoordBuffer );
-            ctx.vertexAttribPointer( this.texCoordLocation, 2, ctx.FLOAT, false, 0, 0 );
-            
-            ctx.activeTexture( ctx.TEXTURE0 );
-            ctx.bindTexture( ctx.TEXTURE_2D, this.texture._glTexture );
+                if (this.background)
+                    ctx.fillRect(x, y, this.width, this.height);
+            }
 
-            var primitiveType = ctx.TRIANGLES;
-            var offset = 0;
-            var count = 6;
-            ctx.drawArrays( primitiveType, offset, count );
+            else
+                Lilo.Internal.roundRect(ctx, x, y, this.width, this.height, this.radius, (this.background != ""), true);
+
+
+            // split 
+            ctx.moveTo(x + this.width / 2, y);
+            ctx.lineTo(x + this.width / 2, y + this.height);
+            ctx.stroke();
+
+            // minus  
+
+            var d = ((this.width / 2) / 2);
+            ctx.moveTo(x + (d - d / 2), y + this.height / 2);
+            ctx.lineTo(x + (d + d / 2), y + this.height / 2);
+            ctx.stroke();
+
+            // plus 
+            var h = ((this.height / 2) / 2);
+            ctx.moveTo(x + (this.width / 2) + (d - d / 2), y + this.height / 2);
+            ctx.lineTo(x + (this.width / 2) + (d + d / 2), y + this.height / 2);
+            ctx.stroke();
+            ctx.moveTo(x + (this.width / 2) + d, y + h);
+            ctx.lineTo(x + (this.width / 2) + d, y + this.height - h);
+            ctx.stroke();
         }
-
     }
 
 })();

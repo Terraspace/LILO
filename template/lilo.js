@@ -1241,7 +1241,7 @@ var Lilo = Lilo || {}; // Use existing namespace, or create a new one if it does
 
         touchTimer : function() {
             if(!Lilo.Engine.mouseDrag) Lilo.Engine.touchTime += 100;
-            if (Lilo.Engine.touchTime > 2000 && Lilo.Engine.mouseDragX < 40 && Lilo.Engine.mouseDragY < 40)
+            if (Lilo.Engine.touchTime > 2000 && Lilo.Engine.mouseDragX < 60 && Lilo.Engine.mouseDragY < 60)
             {
                 Lilo.Engine.mouseButtons[0] = 0;
                 Lilo.Engine.mouseButtons[2] = 1;
@@ -2100,7 +2100,7 @@ var Lilo = Lilo || {}; // Use existing namespace, or create a new one if it does
                          }
                     if (ctrlToSignal.pointerdown) ctrlToSignal.pointerdown();
                 }
-                if (!Lilo.Engine.mouseDrag && ctrlToSignal.click && Lilo.Engine.mouseButtons[0] == 0 && ctrlToSignal.clickstage == 1) {
+                if (!Lilo.Engine.mouseDrag && ctrlToSignal.click && Lilo.Engine.mouseButtons[2] == 0 && Lilo.Engine.mouseButtons[0] == 0 && ctrlToSignal.clickstage == 1) {
                     this.ClearFocus();
                     ctrlToSignal.hasFocus = true;
                     ctrlToSignal.clickstage = 0;
@@ -2141,6 +2141,7 @@ var Lilo = Lilo || {}; // Use existing namespace, or create a new one if it does
                 if (ctrlToSignal.isPointerDown && Lilo.Engine.mouseButtons[0] == 0 && Lilo.Engine.mouseButtons[2] == 0) {
                     ctrlToSignal.isPointerDown = false;
                     ctrlToSignal.clickstage = 0;
+                     ctrlToSignal.rclickstage = 0;
                     if (ctrlToSignal.pointerup) ctrlToSignal.pointerup();
                     if (Lilo.Engine.kybdFocusCtrl && Lilo.Engine.target == Lilo.MOBILE && Lilo.Engine.views[Lilo.Engine.activeView].focusShift)
                         Lilo.Engine.focusOffset = -(Lilo.Engine.kybdFocusCtrl.GetAbsoluteCoords().y - 200);
@@ -7874,7 +7875,6 @@ this.Add( this.menuitems[0].control );
         this.click = function () {
 
             var p = Lilo.Engine.GetPointer();
-
             var coords = Lilo.Internal.GetAbsCoords(this);
 
             if (Lilo.Internal.PointInRect(p.x, p.y, coords.x, coords.y, this.width / 2, this.height)) {
@@ -7890,6 +7890,22 @@ this.Add( this.menuitems[0].control );
                     this.lastbutton = 1;
                     this.onValueUp();
                 }
+            }
+        }
+
+        this.pointerdown = function () 
+        {
+            var p = Lilo.Engine.GetPointer();
+            var coords = Lilo.Internal.GetAbsCoords(this);            
+            if (Lilo.Internal.PointInRect(p.x, p.y, coords.x, coords.y, this.width / 2, this.height)) 
+            {
+                if (this.onValueDown)
+                    this.lastbutton = 0;
+            } 
+            else if (Lilo.Internal.PointInRect(p.x, p.y, coords.x + this.width / 2, coords.y, this.width / 2, this.height)) 
+            {
+                if (this.onValueUp)
+                    this.lastbutton = 1;
             }
         }
 
